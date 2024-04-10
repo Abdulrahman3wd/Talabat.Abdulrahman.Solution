@@ -33,7 +33,7 @@ namespace TalabatAPIs
 
             app.UseHttpsRedirection();
 
-            //app.UseRouting();
+            // app.UseRouting();
             //app.UseEndPoints(endPoints => 
             //{ 
             //endPoints.MapControllerRoute (
