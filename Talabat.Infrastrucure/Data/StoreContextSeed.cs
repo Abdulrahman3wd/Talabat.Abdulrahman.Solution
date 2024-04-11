@@ -44,7 +44,7 @@ namespace Talabat.Infrastrucure.Data
             }
             if (dbContext.Products.Count() == 0)
             {
-                var ProductData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/categories.json");
+                var ProductData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/products.json");
                 var products = JsonSerializer.Deserialize<List<ProductBrand>>(ProductData);
                 if (products?.Count > 0)
                 {
