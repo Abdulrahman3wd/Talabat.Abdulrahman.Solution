@@ -1,6 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
+using Talabat.Core.Entities;
+using Talabat.Core.Repositories.Contract;
+using Talabat.Infrastrucure;
 using Talabat.Infrastrucure.Data;
 
 namespace TalabatAPIs
@@ -24,6 +27,8 @@ namespace TalabatAPIs
             webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
             options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             #endregion
 
 
