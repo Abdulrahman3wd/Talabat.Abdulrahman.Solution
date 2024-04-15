@@ -15,6 +15,7 @@ namespace Talabat.Core.Specifications
         public List<Expression<Func<T, object>>> Includes { get; set; } = null;
         public BaseSpecifications()
         {
+            
            // Criteria =  null;
         }
         public BaseSpecifications(Expression<Func<T, bool>> criteriaEpression)

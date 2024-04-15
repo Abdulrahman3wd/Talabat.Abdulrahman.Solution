@@ -13,7 +13,7 @@ namespace Talabat.Infrastrucure
     {
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery , ISpecifications<TEntity> spec) 
         {
-            var query = inputQuery;
+            var query = inputQuery; //_dbContext.Set<Product>
             if(spec.Criteria is not null) // P=> P.Id == 1
                 query = query.Where(spec.Criteria);
 
@@ -22,7 +22,7 @@ namespace Talabat.Infrastrucure
             // 1. P => P.Brand 
             // 2. P => P.Category 
 
-             spec.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
+            query = spec.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
             // _dbContext.Set<Product>().Where(P=> P.Id == 1).Include(P=>P.Brand)
             return query;
         }
