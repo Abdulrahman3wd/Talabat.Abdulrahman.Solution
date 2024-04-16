@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Text.Json;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastrucure;
@@ -61,9 +64,9 @@ namespace TalabatAPIs
             var services = scope.ServiceProvider;
 
             var _dbContext = services.GetRequiredService<StoreContext>();
-            // Ask CLR for Creating Object from DbContext EXplicitly
-
+            // Ask CLR for Creating Object from DbContext EXplicitly 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<Program>();
             try
             {
                 await _dbContext.Database.MigrateAsync(); // Update-Database
@@ -72,13 +75,43 @@ namespace TalabatAPIs
             catch (Exception ex)
             {
 
-                var logger = loggerFactory.CreateLogger<Program>();
+              
                 logger.LogError(ex, "An Error Has Been Occuerd During aplly the Migration ");
                 Console.WriteLine(ex);
 
             }
             #region Configur Kestrel MiddleWares
             app.UseMiddleware<ExeptionMiddleware>();
+            #region way 3 for implement Middleware
+            //app.Use(async (httpContext, _next) =>
+            //{
+            //    try
+            //    {
+            //        // Take an Action With The Request
+            //        await _next.Invoke(httpContext); // Go To the Next Middleware
+
+            //        // Take an Action with The Response
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        logger.LogError(ex.Message); // Development Env 
+            //                                      //log Exception in (database | Files) // Production Env
+            //        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            //        var response = app.Environment.IsDevelopment() ?
+            //            new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace)
+            //            :
+            //            new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
+            //        var options = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+            //        var json = JsonSerializer.Serialize(response, options);
+            //        await httpContext.Response.WriteAsync(json);
+
+
+            //    }
+
+            //}); 
+            #endregion
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
