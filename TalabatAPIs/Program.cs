@@ -8,6 +8,7 @@ using Talabat.Infrastrucure;
 using Talabat.Infrastrucure.Data;
 using TalabatAPIs.Errors;
 using TalabatAPIs.Helpers;
+using TalabatAPIs.MiddleWares;
 
 namespace TalabatAPIs
 {
@@ -77,6 +78,7 @@ namespace TalabatAPIs
 
             }
             #region Configur Kestrel MiddleWares
+            app.UseMiddleware<ExeptionMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
