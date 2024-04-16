@@ -68,6 +68,7 @@ namespace TalabatAPIs
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             // app.UseRouting();
             //app.UseEndPoints(endPoints => 
