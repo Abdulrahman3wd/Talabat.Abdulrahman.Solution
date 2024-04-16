@@ -6,6 +6,7 @@ using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
 using Talabat.Core.Specifications.ProductSpecs;
 using TalabatAPIs.DTOs;
+using TalabatAPIs.Errors;
 
 namespace TalabatAPIs.Controllers
 {
@@ -36,7 +37,7 @@ namespace TalabatAPIs.Controllers
             var sepc = new ProductWithBrandAndCategorySpecifications(id);
             var product = await _productRepository.GetWithSpecAsync(sepc);
             if (product is null)
-                return NotFound(); // 404 
+                return NotFound(new ApiResponse(404)); // 404 
 
             return Ok(_mapper.Map<Product , ProductToReturnDto>(product));
         }
