@@ -15,10 +15,10 @@ namespace Talabat.Core.Entities
         public decimal Price { get; set; }
 
         public int CategoryId { get; set; } // Foregin key Column => ProductCategory
-        public ProductCategory Category { get; set; } // Navigational Proerty [one] 
+        public ProductCategory ProductCategory { get; set; } // Navigational Proerty [one] 
         public int BrandId { get; set; } // Foregin key Column => ProductBrand
 
-        public ProductBrand Brand { get; set; } // Navigational Proerty [one] 
+        public ProductBrand ProductBrand { get; set; } // Navigational Proerty [one] 
 
     }
 }

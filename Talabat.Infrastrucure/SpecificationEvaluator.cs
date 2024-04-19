@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +22,9 @@ namespace Talabat.Infrastrucure
 
             else if (spec.OrderByDesc is not null)
                 query = query.OrderByDescending(spec.OrderByDesc);
+
+            if(spec.IsPaginationEnabled)
+                query  = query.Skip(spec.Skip).Take(spec.Take);
 
 
             // query = _dbContext.Set<Product>().Where(p=> P.Id ==1)

@@ -26,11 +26,11 @@ namespace Talabat.Infrastrucure.Data.Config
             builder.Property(P => P.Price)
                 .HasColumnType("decimal(18,2)");
 
-            builder.HasOne(P => P.Brand)
+            builder.HasOne(P => P.ProductBrand)
                 .WithMany()
                 .HasForeignKey(P => P.BrandId);
 
-            builder.HasOne(P => P.Category)
+            builder.HasOne(P => P.ProductCategory)
                 .WithMany()
                 .HasForeignKey(P=>P.CategoryId);
 

@@ -8,6 +8,7 @@ using Talabat.Core.Specifications;
 using Talabat.Core.Specifications.ProductSpecs;
 using TalabatAPIs.DTOs;
 using TalabatAPIs.Errors;
+using TalabatAPIs.Helpers;
 
 namespace TalabatAPIs.Controllers
 {
@@ -31,12 +32,18 @@ namespace TalabatAPIs.Controllers
         }
         // /api/Products
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(string sort , int? brandId , int? categoryId)
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecificationsParams specParams)
         {
-            var sepc = new ProductWithBrandAndCategorySpecifications(sort , brandId , categoryId);
+            var sepc = new ProductWithBrandAndCategorySpecifications(specParams);
             var products = await _productRepository.GetAllWithSpecAsync(sepc);
-            return Ok(_mapper.Map<IReadOnlyList<Product> ,IReadOnlyList< ProductToReturnDto>>(products));
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+            var countSpec = new ProductWithFiltrationForCountSpec(specParams);
+            var count = await _productRepository.GetCountAsync(countSpec);
+            return Ok(new Pagination<ProductToReturnDto>(specParams.PageIndex ,specParams.PageSize, count, data));
         }
+
+
+
         [ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound )]
         //api/products/10

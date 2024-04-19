@@ -10,19 +10,19 @@ namespace Talabat.Core.Specifications.ProductSpecs
     public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product>
     {
         // This constructor Will be Used For Creating Object , That will be used to get All Product
-        public ProductWithBrandAndCategorySpecifications(string sort , int? brandId , int? categoryId)
+        public ProductWithBrandAndCategorySpecifications(ProductSpecificationsParams specParams)
             :base(P=> 
-                     (!brandId.HasValue    || P.BrandId == brandId.Value ) && 
-                     (!categoryId.HasValue || P.CategoryId == categoryId.Value)          
+                     (!specParams.BrandId.HasValue    || P.BrandId == specParams.BrandId.Value ) && 
+                     (!specParams.CategoryId.HasValue || P.CategoryId == specParams.CategoryId.Value)          
             )
         {
-            Includes.Add(P=>P.Brand);
-            Includes.Add(p => p.Category);
+            Includes.Add(P=>P.ProductBrand);
+            Includes.Add(p => p.ProductCategory);
 
 
-            if (!string.IsNullOrEmpty(sort))
+            if (!string.IsNullOrEmpty(specParams.Sort))
             {
-                 switch (sort)
+                 switch (specParams.Sort)
                 {
                     case "priceAsc":
                         //OrderBy = P => P.Price; 
@@ -39,7 +39,11 @@ namespace Talabat.Core.Specifications.ProductSpecs
             }
             else
                 AddOrderBy(P => P.Name);
+            // totalProducts = 18 ~ 20
+            // pageSize = 5 
+            // pageIndex = 3 
 
+            ApplyPagination((specParams.PageIndex - 1) * specParams.PageSize, specParams.PageSize);
 
 
         }
@@ -47,8 +51,8 @@ namespace Talabat.Core.Specifications.ProductSpecs
         public ProductWithBrandAndCategorySpecifications(int id)
             :base(P=>P.Id == id)
         {
-            Includes.Add(P => P.Brand);
-            Includes.Add(p => p.Category);
+            Includes.Add(P => P.ProductBrand);
+            Includes.Add(p => p.ProductCategory);
         }
 
     } 
