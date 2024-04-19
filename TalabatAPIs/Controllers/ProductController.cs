@@ -35,10 +35,15 @@ namespace TalabatAPIs.Controllers
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecificationsParams specParams)
         {
             var sepc = new ProductWithBrandAndCategorySpecifications(specParams);
+
             var products = await _productRepository.GetAllWithSpecAsync(sepc);
+
             var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
             var countSpec = new ProductWithFiltrationForCountSpec(specParams);
+
             var count = await _productRepository.GetCountAsync(countSpec);
+
             return Ok(new Pagination<ProductToReturnDto>(specParams.PageIndex ,specParams.PageSize, count, data));
         }
 
