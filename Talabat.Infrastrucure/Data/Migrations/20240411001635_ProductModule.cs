@@ -11,17 +11,17 @@ namespace Talabat.Infrastrucure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ProductBrands",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductBrands", x => x.Id);
-                });
+              name: "ProductBrands",
+              columns: table => new
+              {
+                  Id = table.Column<int>(type: "int", nullable: false)
+                      .Annotation("SqlServer:Identity", "1, 1"),
+                  Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+              },
+              constraints: table =>
+              {
+                  table.PrimaryKey("PK_ProductBrands", x => x.Id);
+              });
 
             migrationBuilder.CreateTable(
                 name: "ProductCategories",
@@ -43,11 +43,11 @@ namespace Talabat.Infrastrucure.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Discription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
