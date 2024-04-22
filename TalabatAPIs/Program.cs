@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System.Net;
 using System.Text.Json;
 using Talabat.Core.Entities;
@@ -34,6 +35,12 @@ namespace TalabatAPIs
             webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
             options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"))
             );
+            webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((servicesProvider) =>
+            {
+                var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+
             webApplicationBuilder.Services.AddApplecationServices();
 
             #endregion
