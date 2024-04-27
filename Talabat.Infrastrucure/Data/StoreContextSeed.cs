@@ -12,23 +12,9 @@ namespace Talabat.Infrastrucure.Data
     {
         public async static Task SeedAsync(StoreContext dbContext)
         {
-            if (dbContext.Products.Count() == 0)
-            {
-                var ProductData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/products.json");
-                var products = JsonSerializer.Deserialize<List<Product>>(ProductData);
-                if (products?.Count > 0)
-                {
-                    foreach (var product in products)
-                    {
-                        dbContext.Set<Product>().Add(product);
+            
 
-                    }
-                    await dbContext.SaveChangesAsync();
-                }
-
-            }
-
-            if (dbContext.ProductBrands.Count() == 0)
+            if (!dbContext.ProductCategories.Any())
             {
                 var brandData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/brands.json");
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandData);
@@ -43,7 +29,7 @@ namespace Talabat.Infrastrucure.Data
                 }
 
             }
-            if(dbContext.ProductCategories.Count() == 0)
+            if(!dbContext.ProductCategories.Any())
             {
                 var CategoryData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/categories.json");
                 var categories = JsonSerializer.Deserialize<List<ProductCategory>>(CategoryData);
@@ -58,9 +44,24 @@ namespace Talabat.Infrastrucure.Data
                 }
 
             }
+			if (!dbContext.ProductCategories.Any())
+			{
+				var ProductData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/products.json");
+				var products = JsonSerializer.Deserialize<List<Product>>(ProductData);
+				if (products?.Count > 0)
+				{
+					foreach (var product in products)
+					{
+						dbContext.Set<Product>().Add(product);
+
+					}
+					await dbContext.SaveChangesAsync();
+				}
+
+			}
 
 
 
-        }
+		}
     }
 }
