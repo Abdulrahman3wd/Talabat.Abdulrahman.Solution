@@ -7,7 +7,7 @@ using Talabat.Infrastrucure.Data;
 
 #nullable disable
 
-namespace Talabat.Infrastrucure.Data.Migrations
+namespace Talabat.Infrastrucure.Data.migrations
 {
     [DbContext(typeof(StoreContext))]
     partial class StoreContextModelSnapshot : ModelSnapshot
@@ -57,7 +57,7 @@ namespace Talabat.Infrastrucure.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Talabat.Core.Entities.ProductBrand", b =>
@@ -74,7 +74,7 @@ namespace Talabat.Infrastrucure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductBrands", (string)null);
+                    b.ToTable("ProductBrands");
                 });
 
             modelBuilder.Entity("Talabat.Core.Entities.ProductCategory", b =>
@@ -91,26 +91,26 @@ namespace Talabat.Infrastrucure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategories", (string)null);
+                    b.ToTable("ProductCategories");
                 });
 
             modelBuilder.Entity("Talabat.Core.Entities.Product", b =>
                 {
-                    b.HasOne("Talabat.Core.Entities.ProductBrand", "Brand")
+                    b.HasOne("Talabat.Core.Entities.ProductBrand", "ProductBrand")
                         .WithMany()
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Talabat.Core.Entities.ProductCategory", "Category")
+                    b.HasOne("Talabat.Core.Entities.ProductCategory", "ProductCategory")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Brand");
+                    b.Navigation("ProductBrand");
 
-                    b.Navigation("Category");
+                    b.Navigation("ProductCategory");
                 });
 #pragma warning restore 612, 618
         }
