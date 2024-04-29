@@ -7,6 +7,7 @@ using Talabat.Core.Entities.Identity;
 using Talabat.Core.Services.Contract;
 using TalabatAPIs.DTOs;
 using TalabatAPIs.Errors;
+using TalabatAPIs.Extensions;
 
 namespace TalabatAPIs.Controllers
 { 
@@ -78,6 +79,14 @@ namespace TalabatAPIs.Controllers
 				Token = await _authServices.CreateTokenAsync(user, _userManager)
 			});
 
+		}
+		[Authorize]
+		[HttpGet("address")]
+		public async Task<ActionResult<Address>> GetUserAddress()
+		{
+
+			var user = await _userManager.FindUserAddressAysnc(User);
+			return Ok(user.Address);
 		}
 	}
 }
