@@ -7,9 +7,11 @@ using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System.Net;
 using System.Text.Json;
+using Talabat.Application.AuthServices;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastrucure;
 using Talabat.Infrastrucure.Data;
 using Talabat.Infrastrucure.Identity;
@@ -52,6 +54,8 @@ namespace TalabatAPIs
             webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>( options =>
             {
             }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+            webApplicationBuilder.Services.AddScoped(typeof(IAuthServices), typeof(AuthServices));
+
 
             #endregion
 
