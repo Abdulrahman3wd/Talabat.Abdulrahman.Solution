@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.Services.Contract;
 using TalabatAPIs.DTOs;
 using TalabatAPIs.Errors;
+using TalabatAPIs.Extensions;
 
 namespace TalabatAPIs.Controllers
 { 
@@ -11,13 +16,19 @@ namespace TalabatAPIs.Controllers
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly IAuthServices _authServices;
+		private readonly IMapper _mapper;
 
 		public AccountController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager )
+            SignInManager<ApplicationUser> signInManager,
+			IAuthServices authServices,
+			IMapper mapper)
         {
 			_userManager = userManager;
 			_signInManager = signInManager;
+			_authServices = authServices;
+			_mapper = mapper;
 		}
 
 		[HttpPost("login")]
@@ -31,7 +42,7 @@ namespace TalabatAPIs.Controllers
 			{
 				DisplayName = user.DisplayName,
 				Email = user.Email,
-				Token = "This Will be Tken"
+				Token = await _authServices.CreateTokenAsync(user ,_userManager)
 			});
 
         }
@@ -54,9 +65,52 @@ namespace TalabatAPIs.Controllers
 			{
 				DisplayName = model.DisplayName,
 				Email = model.Email,
-				Token = "Will be Token"
+				Token = await _authServices.CreateTokenAsync(user, _userManager)
 
 			});
+
+		}
+		[Authorize]
+		[HttpGet]
+		public async Task<ActionResult<UserDto>> GetCurrentUser()
+		{
+			var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+			var user = await _userManager.FindByNameAsync(email);
+			return Ok(new UserDto()
+			{
+				DisplayName = user?.DisplayName ?? string.Empty,
+				Email = user?.Email ?? string.Empty,
+				Token = await _authServices.CreateTokenAsync(user, _userManager)
+			});
+
+		}
+		[Authorize]
+		[HttpGet("address")]
+		public async Task<ActionResult<Address>> GetUserAddress()
+		{
+
+			var user = await _userManager.FindUserAddressAysnc(User);
+			return Ok(_mapper.Map<AddressDto>(user.Address));
+		}
+		[Authorize]
+		[HttpPut("address")]
+		public async Task<ActionResult<Address>> UpdateUserAdderss(AddressDto address)
+		{
+			var updatedAddress = _mapper.Map<Address>(address);
+			var user = await _userManager.FindUserAddressAysnc(User);
+			updatedAddress.Id = user.Address.Id;
+			user.Address = updatedAddress;
+			
+			var result = await _userManager.UpdateAsync(user);
+			if(!result.Succeeded) 
+			{
+				return BadRequest(new ApiValidationErrorResponse()
+				{
+					Errors = result.Errors.Select(E => E.Description)
+				});
+			}
+			return Ok(address);
+
 
 		}
 	}

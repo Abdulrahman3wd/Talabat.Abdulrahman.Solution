@@ -7,9 +7,11 @@ using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System.Net;
 using System.Text.Json;
+using Talabat.Application.AuthServices;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastrucure;
 using Talabat.Infrastrucure.Data;
 using Talabat.Infrastrucure.Identity;
@@ -18,6 +20,9 @@ using TalabatAPIs.Extensions;
 using TalabatAPIs.Extentions;
 using TalabatAPIs.Helpers;
 using TalabatAPIs.MiddleWares;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TalabatAPIs
 {
@@ -29,7 +34,7 @@ namespace TalabatAPIs
 
             // Add services to the container.
             #region Configure Services
-            webApplicationBuilder.Services.AddControllers();
+            webApplicationBuilder.Services.AddControllers().AddNewtonsoftJson(options=>options.SerializerSettings.ReferenceLoopHandling =Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // Register Required Web APIs Services To The DI Container 
 
             webApplicationBuilder.Services.AddSwaggerServices();
@@ -48,10 +53,14 @@ namespace TalabatAPIs
                 return ConnectionMultiplexer.Connect(connection);
             });
 
+
             webApplicationBuilder.Services.AddApplecationServices();
             webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>( options =>
             {
             }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
+
 
             #endregion
 

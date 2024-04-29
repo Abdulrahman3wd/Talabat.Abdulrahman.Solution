@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
+using System.Text;
+using Talabat.Application.AuthServices;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastrucure;
 using TalabatAPIs.Errors;
 using TalabatAPIs.Helpers;
@@ -10,7 +15,7 @@ namespace TalabatAPIs.Extentions
 {
     public static class ApplicationServicesExtension
     {
-        public static IServiceCollection AddApplecationServices (this IServiceCollection services)
+        public static IServiceCollection AddApplecationServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
 
@@ -36,5 +41,31 @@ namespace TalabatAPIs.Extentions
             return services;
 
         }
+        public static IServiceCollection AddAuthServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(/*JwtBearerDefaults.AuthenticationScheme*/ options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = configuration["JWT:ValidIssuer"],
+            ValidateAudience = true,
+            ValidAudience = configuration["JWT:ValidAudience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AuthKey"] ?? string.Empty)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
+            services.AddScoped(typeof(IAuthServices), typeof(AuthServices));
+            return services;
+        }
     }
 }
+
+
