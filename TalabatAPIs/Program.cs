@@ -20,6 +20,9 @@ using TalabatAPIs.Extensions;
 using TalabatAPIs.Extentions;
 using TalabatAPIs.Helpers;
 using TalabatAPIs.MiddleWares;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TalabatAPIs
 {
@@ -50,11 +53,13 @@ namespace TalabatAPIs
                 return ConnectionMultiplexer.Connect(connection);
             });
 
+
             webApplicationBuilder.Services.AddApplecationServices();
             webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>( options =>
             {
             }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
-            webApplicationBuilder.Services.AddScoped(typeof(IAuthServices), typeof(AuthServices));
+
+            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
 
 
             #endregion
