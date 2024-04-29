@@ -17,7 +17,7 @@ namespace TalabatAPIs.Helpers
 
             CreateMap<CustomerBasketDto, CustomerBasket>(); 
             CreateMap<BasketItemDto, BasketItem>();
-            CreateMap<Address, AddressDto>();
+            CreateMap<Address, AddressDto>().ReverseMap();
         }
     }
 }
