@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 
-namespace Talabat.Infrastrucure.Data.Config
+namespace Talabat.Infrastrucure.Data.Config.ProductConfig
 {
     internal class ProductCategoryConfigurations : IEntityTypeConfiguration<ProductCategory>
     {
