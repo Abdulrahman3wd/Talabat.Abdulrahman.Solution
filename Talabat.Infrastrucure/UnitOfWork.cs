@@ -12,7 +12,7 @@ using Talabat.Infrastrucure.Data;
 
 namespace Talabat.Infrastrucure
 {
-	internal class UnitOfWork : IUnitOfWork
+	public class UnitOfWork : IUnitOfWork
 	{
 		private readonly StoreContext _dbContext;
 		//private Dictionary<string,GenericRepository<BaseEntity>> _repositories;
