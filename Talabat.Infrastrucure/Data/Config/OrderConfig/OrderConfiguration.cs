@@ -21,7 +21,14 @@ namespace Talabat.Infrastrucure.Data.Config.OrderConfig
 				(OStatus) => (OrderStatus) Enum.Parse(typeof(OrderStatus),OStatus)
 				);
 			builder.Property(order => order.Subtotal)
-				.HasColumnType("decimal(12,2)"); 
+				.HasColumnType("decimal(12,2)");
+			builder.HasOne(order => order.DeliveryMethod)
+				.WithMany()
+				.OnDelete(DeleteBehavior.SetNull);
+			builder.HasMany(order => order.Items)
+				.WithOne()
+				.OnDelete(DeleteBehavior.Cascade
+				);
 
 				
 
