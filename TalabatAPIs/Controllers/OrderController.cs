@@ -33,6 +33,12 @@ namespace TalabatAPIs.Controllers
 			return Ok(order);
 		}
 
+		[HttpGet] ///api/orders
 
+		public async Task<ActionResult<IReadOnlyList<Order >>>GetOrdersForUserAsync(string email)
+		{
+			var orders = await _orderServices.GetOrdersForUserAsync(email);
+			return Ok(orders);
+		}
 	}
 }
