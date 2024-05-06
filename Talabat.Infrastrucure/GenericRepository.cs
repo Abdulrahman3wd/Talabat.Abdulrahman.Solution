@@ -69,5 +69,9 @@ namespace Talabat.Infrastrucure
 		public void Update(T entity)
             => _dbContext.Set<T>().Update(entity);
 
+		void IGenericRepository<T>.AddAsync(T entity)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
