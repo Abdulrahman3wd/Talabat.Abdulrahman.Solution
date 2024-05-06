@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Order_Aggregate;
 
 namespace Talabat.Infrastrucure.Data
 {
@@ -14,7 +15,7 @@ namespace Talabat.Infrastrucure.Data
         {
             
 
-            if (!dbContext.ProductCategories.Any())
+            if (!dbContext.ProductBrands.Any())
             {
                 var brandData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/brands.json");
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandData);
@@ -44,7 +45,7 @@ namespace Talabat.Infrastrucure.Data
                 }
 
             }
-			if (!dbContext.ProductCategories.Any())
+			if (!dbContext.Products.Any())
 			{
 				var ProductData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/products.json");
 				var products = JsonSerializer.Deserialize<List<Product>>(ProductData);
@@ -53,6 +54,21 @@ namespace Talabat.Infrastrucure.Data
 					foreach (var product in products)
 					{
 						dbContext.Set<Product>().Add(product);
+
+					}
+					await dbContext.SaveChangesAsync();
+				}
+
+			}
+			if (!dbContext.DeliveryMethods.Any())
+			{
+				var deliveryMethodsData = File.ReadAllText("../Talabat.Infrastrucure/Data/DataSeeding/delivery.json");
+				var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+				if (deliveryMethods?.Count > 0)
+				{
+					foreach (var deliveryMethod in deliveryMethods)
+					{
+						dbContext.Set<DeliveryMethod>().Add(deliveryMethod);
 
 					}
 					await dbContext.SaveChangesAsync();
