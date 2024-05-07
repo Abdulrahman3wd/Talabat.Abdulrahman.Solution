@@ -1,19 +1,28 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System.Net;
 using System.Text.Json;
+using Talabat.Application.AuthServices;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastrucure;
 using Talabat.Infrastrucure.Data;
+using Talabat.Infrastrucure.Identity;
 using TalabatAPIs.Errors;
 using TalabatAPIs.Extensions;
 using TalabatAPIs.Extentions;
 using TalabatAPIs.Helpers;
 using TalabatAPIs.MiddleWares;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TalabatAPIs
 {
@@ -25,7 +34,7 @@ namespace TalabatAPIs
 
             // Add services to the container.
             #region Configure Services
-            webApplicationBuilder.Services.AddControllers();
+            webApplicationBuilder.Services.AddControllers().AddNewtonsoftJson(options=>options.SerializerSettings.ReferenceLoopHandling =Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // Register Required Web APIs Services To The DI Container 
 
             webApplicationBuilder.Services.AddSwaggerServices();
@@ -34,37 +43,64 @@ namespace TalabatAPIs
             webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
             options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            webApplicationBuilder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+            options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection")));
+
+            webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((servicesProvider) =>
+            {
+                var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+
+
             webApplicationBuilder.Services.AddApplecationServices();
+            webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>( options =>
+            {
+            }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
+
 
             #endregion
 
 
             var app = webApplicationBuilder.Build();
 
-            using var scope = app.Services.CreateScope();
+			#region Apply All Pending Migrations [Update database ] and Data Seeding
+
+			using var scope = app.Services.CreateScope();
 
 
-            var services = scope.ServiceProvider;
+			var services = scope.ServiceProvider;
 
-            var _dbContext = services.GetRequiredService<StoreContext>();
-            // Ask CLR for Creating Object from DbContext EXplicitly 
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-            var logger = loggerFactory.CreateLogger<Program>();
-            try
-            {
-                await _dbContext.Database.MigrateAsync(); // Update-Database
-                await StoreContextSeed.SeedAsync(_dbContext);
-            }
-            catch (Exception ex)
-            {
+			var _dbContext = services.GetRequiredService<StoreContext>();
+			// Ask CLR for Creating Object from DbContext EXplicitly 
+			var _identityDbContext = services.GetRequiredService<ApplicationIdentityDbContext>();
 
-              
-                logger.LogError(ex, "An Error Has Been Occuerd During aplly the Migration ");
-                Console.WriteLine(ex);
+			var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+			var logger = loggerFactory.CreateLogger<Program>();
+			try
+			{
+				await _dbContext.Database.MigrateAsync(); // Update-Database
+				await StoreContextSeed.SeedAsync(_dbContext); // Data Seeding
+                await _identityDbContext.Database.MigrateAsync(); // Update-Database
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                await ApllicationIdentityDataSeeding.SeedUsersAsync(userManager);// Data Seeding
+			}
+			catch (Exception ex)
+			{
 
-            }
-            #region Configur Kestrel MiddleWares
-            app.UseMiddleware<ExeptionMiddleware>();
+
+				logger.LogError(ex, "An Error Has Been Occuerd During aplly the Migration ");
+				Console.WriteLine(ex);
+
+			}
+			#endregion
+
+
+			#region Configur Kestrel MiddleWares
+			app.UseMiddleware<ExeptionMiddleware>();
             #region way 3 for implement Middleware
             //app.Use(async (httpContext, _next) =>
             //{

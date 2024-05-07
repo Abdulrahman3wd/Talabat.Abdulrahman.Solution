@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 
-namespace Talabat.Infrastrucure.Data.Config
+namespace Talabat.Infrastrucure.Data.Config.ProductConfig
 {
     internal class ProductConfigurations : IEntityTypeConfiguration<Product>
     {
@@ -20,7 +20,7 @@ namespace Talabat.Infrastrucure.Data.Config
             builder.Property(P => P.Description)
                 .IsRequired();
 
-            builder.Property(P=> P.PictureUrl) 
+            builder.Property(P => P.PictureUrl)
                 .IsRequired();
 
             builder.Property(P => P.Price)
@@ -32,9 +32,9 @@ namespace Talabat.Infrastrucure.Data.Config
 
             builder.HasOne(P => P.ProductCategory)
                 .WithMany()
-                .HasForeignKey(P=>P.CategoryId);
+                .HasForeignKey(P => P.CategoryId);
 
-            
+
 
         }
     }

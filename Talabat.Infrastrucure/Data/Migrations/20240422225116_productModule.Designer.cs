@@ -8,11 +8,11 @@ using Talabat.Infrastrucure.Data;
 
 #nullable disable
 
-namespace Talabat.Infrastrucure.Data.Migrations
+namespace Talabat.Infrastrucure.Data.migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240411001635_ProductModule")]
-    partial class ProductModule
+    [Migration("20240422225116_productModule")]
+    partial class productModule
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,21 +99,21 @@ namespace Talabat.Infrastrucure.Data.Migrations
 
             modelBuilder.Entity("Talabat.Core.Entities.Product", b =>
                 {
-                    b.HasOne("Talabat.Core.Entities.ProductBrand", "Brand")
+                    b.HasOne("Talabat.Core.Entities.ProductBrand", "ProductBrand")
                         .WithMany()
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Talabat.Core.Entities.ProductCategory", "Category")
+                    b.HasOne("Talabat.Core.Entities.ProductCategory", "ProductCategory")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Brand");
+                    b.Navigation("ProductBrand");
 
-                    b.Navigation("Category");
+                    b.Navigation("ProductCategory");
                 });
 #pragma warning restore 612, 618
         }
