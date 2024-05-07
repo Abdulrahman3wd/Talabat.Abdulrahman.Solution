@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Talabat.Application.AuthServices;
 using Talabat.Application.OrderServices;
+using Talabat.Application.ProductServices;
 using Talabat.Core;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
@@ -19,6 +20,7 @@ namespace TalabatAPIs.Extentions
     {
         public static IServiceCollection AddApplecationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IProductServices), (typeof(ProductService)));
             services.AddScoped(typeof(IOrderServices),typeof(OrderServices));
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
