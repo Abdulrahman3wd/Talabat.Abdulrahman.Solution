@@ -30,7 +30,7 @@ namespace Talabat.Infrastrucure
 
 
 
-        public async Task<T?> GetAsync(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
             if (typeof(T) == typeof(Product))
                 return await _dbContext.Set<Product>().Where(P=>P.Id==id).Include(P=>P.ProductBrand).Include(P=>P.ProductCategory).FirstOrDefaultAsync() as T ; 
@@ -43,7 +43,7 @@ namespace Talabat.Infrastrucure
             return await ApplySpecification(spec).ToListAsync();
         }
 
-        public async Task<T?> GetWithSpecAsync(ISpecifications<T> spec)
+        public async Task<T?> GetByIdWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
 

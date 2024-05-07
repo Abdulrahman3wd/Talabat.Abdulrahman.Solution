@@ -9,7 +9,8 @@ namespace Talabat.Core.Specifications.OrderSpecs
 {
 	public class OrderSpecifications : BaseSpecifications<Order>
 	{
-		public OrderSpecifications(string buyerEmail) 
+
+        public OrderSpecifications(string buyerEmail) 
 			:base(O=>O.BuyerEmail==buyerEmail) 
 		{
 			Includes.Add(O => O.DeliveryMethod);
@@ -17,6 +18,12 @@ namespace Talabat.Core.Specifications.OrderSpecs
 			AddOrderByDesc(O => O.OrderDate);
 			
 		}
-		
-	}
+        public OrderSpecifications(int orderId, string buyerEmail)
+			:base(O=>O.Id == orderId && O.BuyerEmail == buyerEmail)
+        {
+			Includes.Add(O => O.DeliveryMethod);
+			Includes.Add(O => O.Items);
+		}
+
+    }
 }
