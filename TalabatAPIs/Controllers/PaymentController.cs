@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Talabat.Core.Entities;
@@ -20,10 +21,9 @@ namespace TalabatAPIs.Controllers
 			_logger = logger;
 		}
 
+		[Authorize]
 		[ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status400BadRequest)]
-
-
 		[HttpGet("{basketId}")] // GET : /api/payment/{basketId}
 
 		public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
@@ -40,7 +40,7 @@ namespace TalabatAPIs.Controllers
 			var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
 			var stripeEvent = EventUtility.ConstructEvent(json,
-				Request.Headers["Stripe-Signature"], whSecret);
+				Request.Headers["Stripe-Signature"], whSecret,300,false);
 			var paymentIntent = (PaymentIntent)stripeEvent.Data.Object;
 			Order? order;
 			// Handle the event
