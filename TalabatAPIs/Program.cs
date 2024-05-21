@@ -39,7 +39,6 @@ namespace TalabatAPIs
 
 			webApplicationBuilder.Services.AddSwaggerServices();
 
-
 			webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
 			options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"))
 			);
@@ -59,11 +58,23 @@ namespace TalabatAPIs
 
 			webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
 
+			webApplicationBuilder.Services.AddCors(options =>
+			{
+				options.AddPolicy("MyPolicy", policyOptions =>
+				{
+					policyOptions.AllowAnyHeader().AllowAnyMethod().WithOrigins(webApplicationBuilder.Configuration["FrontBaseUrl"]);
 
-			#endregion
+                });
+
+			});
+		
+        
 
 
-			var app = webApplicationBuilder.Build();
+            #endregion
+
+
+var app = webApplicationBuilder.Build();
 
 			#region Apply All Pending Migrations [Update database ] and Data Seeding
 
@@ -139,19 +150,20 @@ namespace TalabatAPIs
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
-
-			// app.UseRouting();
-			//app.UseEndPoints(endPoints => 
-			//{ 
-			//endPoints.MapControllerRoute (
-			//      name : "default" ,
-			//      pattern : "{controller}/{action}/{id}"
-			//);
-			//endPoints.MapController();
-			//}
+            app.UseCors("MyPolicy");
 
 
-			app.MapControllers();
+            // app.UseRouting();
+            //app.UseEndPoints(endPoints => 
+            //{ 
+            //endPoints.MapControllerRoute (
+            //      name : "default" ,
+            //      pattern : "{controller}/{action}/{id}"
+            //);
+            //endPoints.MapController();
+            //}
+
+            app.MapControllers();
 			#endregion
 
 
