@@ -10,7 +10,7 @@ namespace Talabat.Core.Entities.Identity
 	public class ApplicationUser : IdentityUser
 	{
 		public string DisplayName { get; set; } = null!;
-        public Address? Address { get; set; } = null!; // Navigetional Property [ONE]
+        public UserAddress? Address { get; set; } = null!; // Navigetional Property [ONE]
 
 	 }
 }

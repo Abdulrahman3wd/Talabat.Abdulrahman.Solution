@@ -21,7 +21,7 @@ namespace Talabat.Infrastrucure.Identity
 		{
 			base.OnModelCreating(builder);
 
-			builder.Entity<Address>().ToTable("Adresses");
+			builder.Entity<UserAddress>().ToTable("Adresses");
 		}
 
 

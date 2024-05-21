@@ -15,13 +15,14 @@ namespace Talabat.Core.Entities.Order_Aggregate
         {
             
         }
-        public Order(string buyerEmail, Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> items, decimal subtotal)
+        public Order(string buyerEmail, Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> items, decimal subtotal , string paymentIntentId)
 		{
 			BuyerEmail = buyerEmail;
 			ShippingAddress = shippingAddress;
 			DeliveryMethodId = deliveryMethodId;
 			Items = items;
 			Subtotal = subtotal;
+			PaymentIntentId = paymentIntentId;
 		}
 
 		public string BuyerEmail { get; set; } = null!;
@@ -37,7 +38,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
 		//[NotMapped]
 		//public decimal Total => Subtotal + DeliveryMethod.Cost; 
 		public decimal GetTotal()=>Subtotal + DeliveryMethod.Cost;
-		public string PaymentIntentId { get; set; } = string.Empty;
+		public string PaymentIntentId { get; set; } 
 
 
     }

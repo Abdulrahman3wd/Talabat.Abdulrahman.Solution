@@ -86,7 +86,7 @@ namespace TalabatAPIs.Controllers
 		}
 		[Authorize]
 		[HttpGet("address")]
-		public async Task<ActionResult<Address>> GetUserAddress()
+		public async Task<ActionResult<UserAddress>> GetUserAddress()
 		{
 
 			var user = await _userManager.FindUserAddressAysnc(User);
@@ -94,9 +94,9 @@ namespace TalabatAPIs.Controllers
 		}
 		[Authorize]
 		[HttpPut("address")]
-		public async Task<ActionResult<Address>> UpdateUserAdderss(AddressDto address)
+		public async Task<ActionResult<UserAddress>> UpdateUserAdderss(AddressDto address)
 		{
-			var updatedAddress = _mapper.Map<Address>(address);
+			var updatedAddress = _mapper.Map<UserAddress>(address);
 			var user = await _userManager.FindUserAddressAysnc(User);
 			updatedAddress.Id = user.Address.Id;
 			user.Address = updatedAddress;
