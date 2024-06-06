@@ -14,6 +14,7 @@ using TalabatAPIs.Helpers;
 
 namespace TalabatAPIs.Controllers
 {
+    [Authorize]
 
     public class ProductController : BaseApiController
     {
@@ -34,8 +35,8 @@ namespace TalabatAPIs.Controllers
 			///_categoryRepository = categoryRepository;
 			_mapper = mapper;
         }
+        [CashedAttribute(600)]
         // /api/Products
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecificationsParams specParams)
         {

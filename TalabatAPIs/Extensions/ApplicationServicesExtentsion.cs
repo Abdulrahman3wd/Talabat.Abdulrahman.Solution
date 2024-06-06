@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Talabat.Application.AuthServices;
+using Talabat.Application.CasheServices;
 using Talabat.Application.OrderServices;
 using Talabat.Application.PaymentServices;
 using Talabat.Application.ProductServices;
@@ -24,6 +25,7 @@ namespace TalabatAPIs.Extentions
 	{
 		public static IServiceCollection AddApplecationServices(this IServiceCollection services)
 		{
+			services.AddSingleton(typeof(IResponseCasheServices), typeof(ResponseCasheServices));
 			services.AddScoped(typeof(IPaymentServices), typeof(PaymentServices));
 			services.AddScoped(typeof(IProductServices), (typeof(ProductService)));
 			services.AddScoped(typeof(IOrderServices), typeof(OrderServices));
