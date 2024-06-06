@@ -51,7 +51,7 @@ namespace TalabatAPIs.Helpers
             // pageSize=5
             // sort=name
 
-            foreach (var (key , value) in request.Query)
+            foreach (var (key , value) in request.Query.OrderBy(X=>X.Key))
             {
 
                 keyBuilder.Append($"|{key}-{value}");
